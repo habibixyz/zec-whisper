@@ -1,17 +1,29 @@
 import type { ShieldedRecipient, ShieldedSubmission } from '../types/zcash';
 
-const RECIPIENTS_STORAGE_KEY = 'zecwhisper_recipients_v2';
+const RECIPIENTS_STORAGE_KEY = 'zecwhisper_recipients_v4';
 const SUBMISSIONS_STORAGE_KEY = 'zecwhisper_submissions_v2';
 const DB_NAME = 'ZecWhisperEncryptedStore';
 const STORE_NAME = 'encrypted_evidence';
 
-// Auto-purge any legacy mock storage from previous development/demo runs
+// Auto-purge any legacy mock/demo storage from previous development runs
 try {
   if (typeof window !== 'undefined' && window.localStorage) {
     window.localStorage.removeItem('zecwhisper_recipients_v1');
+    window.localStorage.removeItem('zecwhisper_recipients_v2');
+    window.localStorage.removeItem('zecwhisper_recipients_v3');
     window.localStorage.removeItem('zecwhisper_submissions_v1');
     window.localStorage.removeItem('zecwhisper_recipients');
     window.localStorage.removeItem('zecwhisper_submissions');
+    // Purge v2 submissions if they contain old [DEMO] seed data
+    const raw = window.localStorage.getItem('zecwhisper_submissions_v2');
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.some((s: { id?: string }) => s.id?.startsWith('sub-seed-'))) {
+          window.localStorage.removeItem('zecwhisper_submissions_v2');
+        }
+      } catch { /* ignore */ }
+    }
   }
 } catch {
   // Ignore in environments without window or localStorage

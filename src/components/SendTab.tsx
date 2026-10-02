@@ -142,22 +142,6 @@ export const SendTab: React.FC<SendTabProps> = ({
           <div className="field" style={{ marginBottom: '1.25rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <div style={{ display: 'flex', gap: 6 }}>
-                <button
-                  type="button"
-                  className={`btn-ghost ${useCustom ? 'active' : ''}`}
-                  onClick={() => setUseCustom(true)}
-                  style={{
-                    fontSize: '0.78rem',
-                    padding: '5px 10px',
-                    borderRadius: 6,
-                    background: useCustom ? 'rgba(244,183,40,0.12)' : 'transparent',
-                    border: `1px solid ${useCustom ? 'var(--border-gold)' : 'transparent'}`,
-                    color: useCustom ? 'var(--gold)' : 'var(--text-3)',
-                    fontWeight: useCustom ? 700 : 500,
-                  }}
-                >
-                  🎯 Direct Orchard Address (u1...)
-                </button>
                 {recipients.length > 0 && (
                   <button
                     type="button"
@@ -173,9 +157,25 @@ export const SendTab: React.FC<SendTabProps> = ({
                       fontWeight: !useCustom ? 700 : 500,
                     }}
                   >
-                    📁 Directory Drop Boxes ({recipients.length})
+                    🛡️ Escrow Vault & Directory ({recipients.length})
                   </button>
                 )}
+                <button
+                  type="button"
+                  className={`btn-ghost ${useCustom ? 'active' : ''}`}
+                  onClick={() => setUseCustom(true)}
+                  style={{
+                    fontSize: '0.78rem',
+                    padding: '5px 10px',
+                    borderRadius: 6,
+                    background: useCustom ? 'rgba(244,183,40,0.12)' : 'transparent',
+                    border: `1px solid ${useCustom ? 'var(--border-gold)' : 'transparent'}`,
+                    color: useCustom ? 'var(--gold)' : 'var(--text-3)',
+                    fontWeight: useCustom ? 700 : 500,
+                  }}
+                >
+                  🎯 Custom Shielded Address
+                </button>
               </div>
 
               {validation.valid && (
@@ -254,12 +254,26 @@ export const SendTab: React.FC<SendTabProps> = ({
                 </div>
               </div>
             )}
-            {/* Confirmed real */}
+            {/* Destination Verification Badge */}
             {validation.valid && !isDemo && (
-              <div className="alert alert-green" style={{ marginTop: 8 }}>
-                <ShieldCheck size={15} style={{ flexShrink: 0, marginTop: 1 }} />
-                <span><strong>Real wallet destination.</strong> Funds arrive directly via Zcash Orchard — ZecWhisper has zero custody.</span>
-              </div>
+              selectedRecipient?.isContractVault && !useCustom ? (
+                <div style={{ marginTop: 10, padding: '10px 14px', borderRadius: 8, background: 'rgba(244, 183, 40, 0.08)', border: '1px solid rgba(244, 183, 40, 0.3)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--gold)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <ShieldCheck size={14} /> Official Escrow Vault Contract
+                    </span>
+                    <span className="badge badge-gold" style={{ fontSize: '0.62rem' }}>Publicly Auditable (IVK)</span>
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-2)', lineHeight: 1.5 }}>
+                    Funds & memos are held safely in the ZecWhisper Escrow Vault. All drops are visible for public audit via the Incoming Viewing Key (IVK), and only verified custodians can withdraw/disburse funds.
+                  </div>
+                </div>
+              ) : (
+                <div className="alert alert-green" style={{ marginTop: 8 }}>
+                  <ShieldCheck size={15} style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span><strong>Real wallet destination.</strong> Funds arrive directly via Zcash Orchard — ZecWhisper has zero custody.</span>
+                </div>
+              )
             )}
           </div>
 
@@ -334,12 +348,30 @@ export const SendTab: React.FC<SendTabProps> = ({
                 </span>
               ) : null}
             </div>
-            <div className="amount-pills">
-              {[0, 0.01, 0.05, 0.1, 0.5].map(v => (
-                <button key={v} type="button" className={`amount-pill ${amount === v ? 'active' : ''}`} onClick={() => setAmount(v)}>
-                  {v === 0 ? '0 (Free / Message Only)' : `${v} ZEC`}
-                </button>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+              {/* Free row — full width */}
+              <button
+                type="button"
+                className={`amount-pill ${amount === 0 ? 'active' : ''}`}
+                onClick={() => setAmount(0)}
+                style={{ width: '100%' }}
+              >
+                0 ZEC — Free (Message Only)
+              </button>
+              {/* ZEC amounts row */}
+              <div style={{ display: 'flex', gap: 7 }}>
+                {[0.01, 0.05, 0.1, 0.5].map(v => (
+                  <button
+                    key={v}
+                    type="button"
+                    className={`amount-pill ${amount === v ? 'active' : ''}`}
+                    onClick={() => setAmount(v)}
+                    style={{ flex: 1 }}
+                  >
+                    {v} ZEC
+                  </button>
+                ))}
+              </div>
             </div>
             <div style={{ position: 'relative', marginTop: 7 }}>
               <input
@@ -495,40 +527,50 @@ export const SendTab: React.FC<SendTabProps> = ({
               <Lock size={10} /> ZIP-321 Shielded Payment
             </span>
 
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.25rem' }}>Scan with Your Wallet</h3>
-            <p style={{ color: 'var(--text-2)', fontSize: '0.82rem', marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.15rem' }}>Scan with Your Wallet</h3>
+            <p style={{ color: 'var(--text-2)', fontSize: '0.8rem', marginBottom: '0.6rem' }}>
               Open <strong>Zashi</strong>, <strong>YWallet</strong>, or <strong>ZODL</strong> and scan.
             </p>
 
-            {isDemo ? (
-              <div className="alert alert-amber" style={{ marginBottom: '1rem', justifyContent: 'center', textAlign: 'center', fontSize: '0.76rem' }}>
-                <AlertTriangle size={13} />
-                <span>Demo test address · To send real ZEC, enter your own Orchard address (<span className="mono">u1...</span>).</span>
-              </div>
-            ) : (
-              <div className="alert alert-green" style={{ marginBottom: '1rem', justifyContent: 'center', textAlign: 'center', fontSize: '0.78rem' }}>
-                <ShieldCheck size={14} />
-                <span><strong>Live Zcash Mainnet (Orchard)</strong> — Non-custodial direct transfer</span>
-              </div>
-            )}
+            <div
+              className={`alert ${selectedRecipient?.isContractVault && !useCustom ? 'alert-gold' : 'alert-green'}`}
+              style={{
+                marginBottom: '0.6rem',
+                justifyContent: 'center',
+                textAlign: 'center',
+                fontSize: '0.76rem',
+                ...(selectedRecipient?.isContractVault && !useCustom
+                  ? { background: 'rgba(244,183,40,0.1)', border: '1px solid rgba(244,183,40,0.35)', color: 'var(--gold)' }
+                  : {})
+              }}
+            >
+              <ShieldCheck size={14} />
+              <span>
+                {selectedRecipient?.isContractVault && !useCustom
+                  ? <strong>ZecWhisper Escrow Vault — Publicly Auditable via IVK</strong>
+                  : <strong>Live Zcash Mainnet (Orchard) — Non-custodial transfer</strong>
+                }
+              </span>
+            </div>
 
             <div className="qr-frame">
               {qrUrl
-                ? <img src={qrUrl} alt="ZIP-321 QR" style={{ width: 220, height: 220, display: 'block' }} />
-                : <div style={{ width: 220, height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#07090E', fontWeight: 600 }}>Generating...</div>
+                ? <img src={qrUrl} alt="ZIP-321 QR" style={{ width: 180, height: 180, display: 'block' }} />
+                : <div style={{ width: 180, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#07090E', fontWeight: 600 }}>Generating...</div>
               }
             </div>
 
             {/* Summary */}
             <div style={{ background: 'rgba(0,0,0,0.4)', padding: '10px 14px', borderRadius: 10, textAlign: 'left', marginBottom: '1rem', fontSize: '0.8rem' }}>
               {[
+                ['Destination', !useCustom && selectedRecipient ? `${selectedRecipient.name} (${selectedRecipient.isContractVault ? 'Escrow Vault' : 'Recipient'})` : 'Shielded Orchard Address', 'var(--gold)'],
                 ['Amount', `${amount} ZEC${marketPriceUsd && marketPriceUsd > 0 ? ` (≈ $${(amount * marketPriceUsd).toFixed(2)})` : ''}`, 'var(--gold)'],
-                ['To', truncateAddress(activeAddr), 'var(--text-1)'],
-                ['Memo', byteCount > 0 ? `${byteCount}B encrypted` : 'None', 'var(--green)'],
+                ['Vault Address', truncateAddress(activeAddr), 'var(--text-1)'],
+                ['Encrypted Memo', byteCount > 0 ? `${byteCount}B encrypted` : 'None', 'var(--green)'],
               ].map(([k, v, c]) => (
                 <div key={k as string} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                   <span style={{ color: 'var(--text-3)' }}>{k}</span>
-                  <span className={k === 'To' ? 'mono' : ''} style={{ color: c as string, fontWeight: 600, fontSize: '0.78rem' }}>{v}</span>
+                  <span className={k === 'Vault Address' ? 'mono' : ''} style={{ color: c as string, fontWeight: 600, fontSize: '0.78rem' }}>{v}</span>
                 </div>
               ))}
             </div>

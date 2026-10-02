@@ -10,6 +10,10 @@ export interface ShieldedRecipient {
   verified: boolean;
   /** If true, this is a synthetic test address — not a real wallet destination */
   isDemo?: boolean;
+  /** If true, indicates this is an official on-chain escrow/vault contract */
+  isContractVault?: boolean;
+  /** Public Incoming Viewing Key (IVK) for transparent public auditing */
+  viewingKey?: string;
 }
 
 

@@ -6,11 +6,11 @@
 ---
 
 ## 📌 Status Summary
-- **Current State:** Comprehensive Real-World Transaction Audit Complete. 
-  - Verified 100% compliant ZIP-321 payment request generation (`zcash:<address>?amount=<val>&memo=<base64url>`) with clean handling of empty memos and testnet addresses (`utest1...`, `ztestsapling1...`).
+- **Current State:** Comprehensive Real-World Transaction Audit & Escrow Contract Vault Complete. 
+  - Integrated official **ZecWhisper Escrow Vault Contract** as the primary default destination for anonymous tips and bounties.
+  - Enabled Public Incoming Viewing Key (IVK) architecture: anyone can audit and inspect incoming disclosures on-chain, while funds are safeguarded in the shielded Orchard pool and withdrawable only by the verified vault custodian.
+  - Verified 100% compliant ZIP-321 payment request generation (`zcash:<address>?amount=<val>&memo=<base64url>`).
   - Added real-world wallet confirmation bridge: users scanning with mobile Zashi / YWallet can paste and track their real on-chain transaction hashes (TxID) with direct Blockchair explorer inspection.
-  - Verified live Zcash Mainnet consensus sync (querying live blocks from blockchair / lightwalletd).
-  - Fixed client-side AES-256-GCM IV encoding in memo payload for authentic cryptographic decryption of attached evidence.
   - Production build passing with 0 errors (`tsc -b && vite build`).
 - **Active Workspace Directory:** `C:\Users\tanvi\.gemini\antigravity-ide\scratch\zecwhisper`
 

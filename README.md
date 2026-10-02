@@ -135,10 +135,12 @@ Open `http://localhost:5173/` in your browser.
 zecwhisper/
 ├── src/
 │   ├── components/
-│   │   ├── DropPortal.tsx             # ZIP-321 generator, memo limiter, QR code
-│   │   ├── RecipientInbox.tsx         # IVK note scanner & AES-GCM evidence decryptor
-│   │   ├── DisclosuresWall.tsx        # Public disclosure feed with search & proofs
-│   │   ├── DirectoryView.tsx          # Verified recipient directory
+│   │   ├── SendTab.tsx                # ZIP-321 generator, memo limiter, QR modal, file encryption
+│   │   ├── InboxTab.tsx               # IVK note scanner & AES-GCM evidence decryptor
+│   │   ├── DirectoryTab.tsx           # Verified recipient & Escrow Vault directory
+│   │   ├── HomeTab.tsx                # Privacy architecture overview & quick-start
+│   │   ├── AboutFaqTab.tsx            # Zero-leak security principles & Zcash FAQ
+│   │   ├── RegisterDropBoxModal.tsx   # Register Orchard Unified Addresses client-side
 │   │   ├── LightwalletdScannerModal.tsx # Live Mainnet/Testnet block scanner & ping
 │   │   ├── JudgeTestingKitModal.tsx   # Step-by-step judge verification guide
 │   │   └── ProofReceiptModal.tsx      # Exportable JSON cryptographic receipts
