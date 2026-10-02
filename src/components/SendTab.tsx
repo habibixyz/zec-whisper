@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
-import confetti from 'canvas-confetti';
 import {
   ShieldCheck, Paperclip, QrCode, Copy, Check, ExternalLink,
-  AlertTriangle, Lock, Sparkles, FileText, Share2, X
+  AlertTriangle, Lock, FileText, Share2, X, Terminal, Shield
 } from 'lucide-react';
 import type { ShieldedRecipient, SubmissionCategory, EncryptedAttachment } from '../types/zcash';
 import { MAX_MEMO_BYTES, getUtf8ByteLength, validateShieldedAddress, buildZip321Uri, truncateAddress } from '../utils/zip321';
@@ -104,13 +103,11 @@ export const SendTab: React.FC<SendTabProps> = ({
     if (!clean) { setTxidErr('Enter the 64-character transaction hash.'); return; }
     if (!/^[0-9a-fA-F]{64}$/.test(clean)) { setTxidErr('Invalid TxID — must be 64 hex characters.'); return; }
     setTxidErr('');
-    confetti({ particleCount: 90, spread: 75, origin: { y: 0.6 }, colors: ['#10B981', '#F4B728', '#FFFFFF'] });
     onBroadcast({ recipientHandle: getHandle(), amount, message, category, attachment: attachment || undefined, txid: clean });
     setRealTxid(''); setShowQR(false);
   };
 
   const handleSimulate = () => {
-    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ['#F4B728', '#10B981', '#FFFFFF'] });
     onBroadcast({ recipientHandle: getHandle(), amount, message, category, attachment: attachment || undefined });
     setShowQR(false);
   };
@@ -155,9 +152,13 @@ export const SendTab: React.FC<SendTabProps> = ({
                       border: `1px solid ${!useCustom ? 'var(--border-gold)' : 'transparent'}`,
                       color: !useCustom ? 'var(--gold)' : 'var(--text-3)',
                       fontWeight: !useCustom ? 700 : 500,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
                     }}
                   >
-                    🛡️ Escrow Vault & Directory ({recipients.length})
+                    <Shield size={13} />
+                    Escrow Vault &amp; Directory ({recipients.length})
                   </button>
                 )}
                 <button
@@ -172,9 +173,13 @@ export const SendTab: React.FC<SendTabProps> = ({
                     border: `1px solid ${useCustom ? 'var(--border-gold)' : 'transparent'}`,
                     color: useCustom ? 'var(--gold)' : 'var(--text-3)',
                     fontWeight: useCustom ? 700 : 500,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
                   }}
                 >
-                  🎯 Custom Shielded Address
+                  <Terminal size={13} />
+                  Custom Address
                 </button>
               </div>
 
@@ -339,8 +344,8 @@ export const SendTab: React.FC<SendTabProps> = ({
             <div className="field-label">
               <span>Attach Optional ZEC Bounty / Tip</span>
               {amount === 0 ? (
-                <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--green)' }}>
-                  ✓ Free (Message Only)
+                <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--green)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Check size={12} /> Free (Message Only)
                 </span>
               ) : marketPriceUsd && marketPriceUsd > 0 ? (
                 <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--green)' }}>
@@ -477,8 +482,8 @@ export const SendTab: React.FC<SendTabProps> = ({
                 </p>
                 {recipients.length === 0 && onOpenRegisterModal && (
                   <button type="button" className="btn-primary" onClick={onOpenRegisterModal} style={{ marginTop: '1rem', padding: '9px 18px', fontSize: '0.84rem' }}>
-                    <Sparkles size={14} />
-                    Register My Drop Box
+                    <ShieldCheck size={14} />
+                    Register Drop Box
                   </button>
                 )}
               </div>
@@ -491,17 +496,17 @@ export const SendTab: React.FC<SendTabProps> = ({
               <ShieldCheck size={15} /> Zero-Leak Guarantees
             </div>
             <ul className="check-list">
-              <li><span className="check-icon">✓</span><span><strong>Sender Privacy</strong> — Orchard zk-SNARKs hide your wallet address and IP.</span></li>
-              <li><span className="check-icon">✓</span><span><strong>Encrypted Memo</strong> — Only the recipient's viewing key can decrypt it.</span></li>
-              <li><span className="check-icon">✓</span><span><strong>No Accounts</strong> — No email, login, cookies, or server logs.</span></li>
-              <li><span className="check-icon">✓</span><span><strong>Non-Custodial</strong> — ZecWhisper never holds or routes your funds.</span></li>
+              <li><span className="check-icon"><Check size={13} /></span><span><strong>Sender Privacy</strong> — Orchard zk-SNARKs hide your wallet address and IP.</span></li>
+              <li><span className="check-icon"><Check size={13} /></span><span><strong>Encrypted Memo</strong> — Only the recipient's viewing key can decrypt it.</span></li>
+              <li><span className="check-icon"><Check size={13} /></span><span><strong>No Accounts</strong> — No email, login, cookies, or server logs.</span></li>
+              <li><span className="check-icon"><Check size={13} /></span><span><strong>Non-Custodial</strong> — ZecWhisper never holds or routes your funds.</span></li>
             </ul>
           </div>
 
           {/* How to send hint */}
           <div className="card-sm" style={{ padding: '1.25rem' }}>
             <div style={{ fontWeight: 700, fontSize: '0.84rem', color: 'var(--gold)', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Sparkles size={13} /> How to Send
+              <FileText size={13} /> Transmission Protocol
             </div>
             <ol style={{ paddingLeft: '1.15rem', fontSize: '0.8rem', color: 'var(--text-2)', lineHeight: 1.75 }}>
               <li>Select a recipient or paste your Orchard address</li>
@@ -622,7 +627,7 @@ export const SendTab: React.FC<SendTabProps> = ({
               {/* Demo simulation helper */}
               <div style={{ textAlign: 'center', marginTop: 2 }}>
                 <button type="button" onClick={handleSimulate} className="btn-ghost" style={{ fontSize: '0.74rem', color: 'var(--text-3)', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                  <Sparkles size={12} color="var(--gold)" />
+                  <ShieldCheck size={12} color="var(--gold)" />
                   Testing without a wallet? Simulate confirmation →
                 </button>
               </div>

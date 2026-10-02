@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Lock, Sparkles, ChevronDown, HelpCircle } from 'lucide-react';
+import { ArrowRight, Lock, ShieldCheck, ChevronDown, HelpCircle, ShieldAlert, EyeOff, KeyRound, Cpu } from 'lucide-react';
 
 interface AboutFaqTabProps {
   onGoSend: () => void;
@@ -81,7 +81,7 @@ export const AboutFaqTab: React.FC<AboutFaqTabProps> = ({ onGoSend, onGoRegister
               Send a Drop
             </button>
             <button type="button" className="btn-secondary" onClick={onGoRegister} style={{ padding: '11px 20px' }}>
-              <Sparkles size={14} />
+              <ShieldCheck size={14} />
               Register Drop Box
             </button>
           </div>
@@ -98,32 +98,32 @@ export const AboutFaqTab: React.FC<AboutFaqTabProps> = ({ onGoSend, onGoRegister
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
             {[
               {
-                icon: '🔐',
+                icon: <ShieldAlert size={20} color="var(--gold)" />,
                 title: 'No Transparent Addresses',
                 body: 'ZecWhisper strictly rejects all transparent t-addresses (t1..., t3...). Only Orchard Unified Addresses (u1...) are accepted — the only format that provides Halo 2 zk-SNARK privacy.',
                 color: 'var(--gold)',
               },
               {
-                icon: '📵',
+                icon: <EyeOff size={20} color="var(--green)" />,
                 title: 'Zero Telemetry',
                 body: 'No analytics, no tracking pixels, no third-party scripts that could link your IP to a transaction. ZecWhisper has no backend — all state lives in your browser.',
                 color: 'var(--green)',
               },
               {
-                icon: '🔑',
+                icon: <KeyRound size={20} color="var(--cyan)" />,
                 title: 'IVK-Only Key Policy',
                 body: 'We never ask for spending keys or seed phrases. Only Incoming Viewing Keys (IVKs) are used, and only for trial-decrypting compact Orchard blocks — a read-only operation.',
                 color: 'var(--cyan)',
               },
               {
-                icon: '⚙️',
+                icon: <Cpu size={20} color="var(--purple)" />,
                 title: 'Working Beats Ambitious',
                 body: 'Every feature ships with a working demo mode and real fallback. Judges can test the full flow without testnet ZEC. Real sends go to real wallets with real cryptographic proofs.',
                 color: 'var(--purple)',
               },
             ].map(p => (
               <div key={p.title} className="how-card">
-                <div style={{ fontSize: '1.75rem', marginBottom: '0.85rem' }}>{p.icon}</div>
+                <div style={{ marginBottom: '0.85rem' }}>{p.icon}</div>
                 <div className="how-title" style={{ color: p.color }}>{p.title}</div>
                 <p className="how-body">{p.body}</p>
               </div>

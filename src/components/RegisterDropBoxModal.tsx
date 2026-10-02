@@ -4,8 +4,7 @@ import {
   ShieldCheck, 
   AlertTriangle, 
   UserCheck, 
-  Lock, 
-  Sparkles 
+  Lock
 } from 'lucide-react';
 import type { ShieldedRecipient } from '../types/zcash';
 import { validateShieldedAddress } from '../utils/zip321';
@@ -88,7 +87,7 @@ export const RegisterDropBoxModal: React.FC<RegisterDropBoxModalProps> = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <Sparkles size={20} color="var(--zec-gold)" />
+              <ShieldCheck size={20} color="var(--gold)" />
               <h2 style={{ fontSize: '1.3rem', fontWeight: 800 }}>
                 Register Your Real Drop Box
               </h2>

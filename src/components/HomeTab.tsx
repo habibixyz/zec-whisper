@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lock, ShieldCheck, Sparkles, ArrowRight, Zap } from 'lucide-react';
+import { Lock, ShieldCheck, ArrowRight, Terminal, Shield, FileCode, Server, HardDrive, KeyRound } from 'lucide-react';
 import type { ShieldedSubmission } from '../types/zcash';
 
 interface HomeTabProps {
@@ -21,7 +21,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="container">
           <div className="hero-eyebrow">
             <ShieldCheck size={13} />
-            Zcash Orchard · Zero-Knowledge Privacy
+            Zcash Orchard · Zero-Knowledge Privacy Architecture
           </div>
 
           <h1 className="hero-title">
@@ -40,8 +40,8 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               Send a Shielded Drop
             </button>
             <button type="button" className="btn-secondary" onClick={onGoRegister} style={{ padding: '12px 22px', fontSize: '0.9rem', gap: 8 }}>
-              <Sparkles size={15} />
-              Register My Drop Box
+              <ShieldCheck size={15} />
+              Register Drop Box
             </button>
           </div>
 
@@ -68,7 +68,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.74rem', fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.75rem' }}>
-              <Zap size={13} /> Simple Process
+              <Terminal size={13} /> Transmission Protocol
             </div>
             <h2 className="section-heading">How ZecWhisper Works</h2>
             <p className="section-sub" style={{ maxWidth: 520, margin: '0 auto' }}>
@@ -79,22 +79,22 @@ export const HomeTab: React.FC<HomeTabProps> = ({
           <div className="how-grid">
             {[
               {
-                n: '1',
+                n: '01',
                 title: 'Set Up Your Drop Box',
-                body: 'Anyone — journalist, researcher, DAO — can register their Zcash Orchard address (u1...) from Zashi or YWallet. It takes 30 seconds.',
+                body: 'Anyone — journalist, researcher, DAO — can register their Zcash Orchard address (u1...) from Zashi or YWallet. Stored client-side.',
               },
               {
-                n: '2',
+                n: '02',
                 title: 'Compose & Encrypt',
                 body: 'Write your message (up to 512 bytes, encrypted in-band). Optionally attach a file — it\'s AES-256-GCM encrypted client-side before any transmission.',
               },
               {
-                n: '3',
+                n: '03',
                 title: 'Scan & Send via Wallet',
                 body: 'A ZIP-321 QR code is generated. Scan it with Zashi, YWallet, or ZODL and confirm. The payment and memo arrive shielded — no metadata, no IP, no trace.',
               },
               {
-                n: '4',
+                n: '04',
                 title: 'Recipient Receives Privately',
                 body: 'The recipient uses their Incoming Viewing Key to decrypt the memo. They can optionally publish the drop to the public disclosure board with proof.',
               },
@@ -114,25 +114,25 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.74rem', fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.75rem' }}>
-              <ShieldCheck size={13} /> Privacy Stack
+              <ShieldCheck size={13} /> Cryptographic Primitives
             </div>
-            <h2 className="section-heading">Built on Real Cryptography</h2>
+            <h2 className="section-heading">Zero-Knowledge Security Stack</h2>
             <p className="section-sub" style={{ maxWidth: 520, margin: '0 auto' }}>
-              No promises. Just math.
+              Enforced by mathematics, not trust.
             </p>
           </div>
 
           <div className="tech-grid">
             {[
-              { icon: '🛡️', color: '#F4B728', name: 'Orchard zk-SNARKs', desc: 'Halo 2 proof system. Sender, amount, and memo are cryptographically hidden from every observer.' },
-              { icon: '📜', color: '#10B981', name: 'ZIP-321 Payment URI', desc: 'Standard Zcash payment request format. Works natively with Zashi, YWallet, and ZODL.' },
-              { icon: '🔐', color: '#38BDF8', name: 'AES-256-GCM Files', desc: 'Evidence files encrypted in your browser before leaving your device. Keys live in the memo only.' },
-              { icon: '🌐', color: '#A78BFA', name: 'Lightwalletd gRPC', desc: 'Connects to real Zcash light nodes (ECC, zec.rocks) for live block heights and compact block scanning.' },
-              { icon: '🗄️', color: '#FBBF24', name: 'Zero-Server Storage', desc: 'All state lives in your browser\'s localStorage and IndexedDB. No backend database — ever.' },
-              { icon: '🔑', color: '#F87171', name: 'IVK-Only Scanning', desc: 'Only Incoming Viewing Keys are used for trial decryption. Spending keys are never requested.' },
+              { icon: <Shield size={18} color="var(--gold)" />, name: 'Orchard zk-SNARKs', desc: 'Halo 2 proof system. Sender, amount, and memo are cryptographically hidden from every observer.' },
+              { icon: <FileCode size={18} color="var(--green)" />, name: 'ZIP-321 Payment URI', desc: 'Standard Zcash payment request format. Works natively with Zashi, YWallet, and ZODL.' },
+              { icon: <Lock size={18} color="var(--cyan)" />, name: 'AES-256-GCM Files', desc: 'Evidence files encrypted in your browser before leaving your device. Keys live in the memo only.' },
+              { icon: <Server size={18} color="var(--purple)" />, name: 'Lightwalletd gRPC', desc: 'Connects to real Zcash light nodes (ECC, zec.rocks) for live block heights and compact block scanning.' },
+              { icon: <HardDrive size={18} color="var(--amber)" />, name: 'Zero-Server Storage', desc: 'All state lives in your browser\'s localStorage and IndexedDB. No backend database — ever.' },
+              { icon: <KeyRound size={18} color="#F87171" />, name: 'IVK-Only Scanning', desc: 'Only Incoming Viewing Keys are used for trial decryption. Spending keys are never requested.' },
             ].map(t => (
               <div key={t.name} className="tech-card">
-                <div className="tech-icon" style={{ background: `${t.color}18`, fontSize: '1.3rem' }}>
+                <div className="tech-icon" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-1)' }}>
                   {t.icon}
                 </div>
                 <div>
@@ -149,30 +149,31 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       <section style={{ padding: '3rem 0', borderTop: '1px solid var(--border-1)' }}>
         <div className="container">
           <div style={{
-            background: 'linear-gradient(135deg, rgba(244,183,40,0.08) 0%, rgba(16,185,129,0.05) 100%)',
-            border: '1px solid var(--border-gold)',
-            borderRadius: 24,
-            padding: '3rem',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-1)',
+            borderRadius: 14,
+            padding: '3rem 2rem',
             textAlign: 'center',
+            boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.05)',
           }}>
-            <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
-              Ready to get started?
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '0.75rem' }}>
+              Ready to submit or receive disclosures?
             </h2>
-            <p style={{ color: 'var(--text-2)', fontSize: '0.95rem', marginBottom: '1.75rem', maxWidth: 480, margin: '0 auto 1.75rem' }}>
-              Register your Orchard Unified Address and start receiving shielded, private tips and disclosures — or send one right now.
+            <p style={{ color: 'var(--text-2)', fontSize: '0.9rem', marginBottom: '1.75rem', maxWidth: 480, margin: '0 auto 1.75rem' }}>
+              Register your Orchard Unified Address to receive shielded disclosures, or send one anonymously now.
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button type="button" className="btn-primary" onClick={onGoRegister} style={{ padding: '13px 28px', fontSize: '0.92rem' }}>
-                <Sparkles size={15} />
-                Register My Drop Box
+              <button type="button" className="btn-primary" onClick={onGoRegister} style={{ padding: '11px 24px', fontSize: '0.88rem' }}>
+                <ShieldCheck size={14} />
+                Register Drop Box
               </button>
-              <button type="button" className="btn-secondary" onClick={onGoSend} style={{ padding: '12px 22px', fontSize: '0.9rem', gap: 8 }}>
+              <button type="button" className="btn-secondary" onClick={onGoSend} style={{ padding: '11px 20px', fontSize: '0.88rem', gap: 7 }}>
                 <Lock size={14} />
                 Send a Drop
                 <ArrowRight size={14} />
               </button>
-              <button type="button" className="btn-ghost" onClick={onGoAbout} style={{ fontSize: '0.88rem', color: 'var(--text-2)' }}>
-                Learn more →
+              <button type="button" className="btn-ghost" onClick={onGoAbout} style={{ fontSize: '0.86rem', color: 'var(--text-2)' }}>
+                Documentation &amp; FAQ →
               </button>
             </div>
           </div>

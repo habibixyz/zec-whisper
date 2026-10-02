@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Lock, Inbox, Users, ShieldCheck, Sparkles, HelpCircle } from 'lucide-react';
+import { Lock, Inbox, Users, ShieldCheck, HelpCircle } from 'lucide-react';
 import type {
   ShieldedRecipient, ShieldedSubmission, SubmissionCategory,
   EncryptedAttachment, NetworkBlockStatus, ZcashNetwork, LightwalletdServer
@@ -223,8 +223,8 @@ export default function App() {
               onClick={() => setIsRegisterOpen(true)}
               style={{ padding: '9px 16px', fontSize: '0.84rem', gap: 7 }}
             >
-              <Sparkles size={14} />
-              My Drop Box
+              <ShieldCheck size={14} />
+              Register Drop Box
             </button>
           </div>
         </div>
