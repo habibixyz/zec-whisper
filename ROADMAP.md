@@ -55,6 +55,7 @@
 - [x] Interactive in-app Judge Testing Kit modal with copyable ZIP-321 test vectors.
 - [x] Cryptographic Proof-of-Whistleblow JSON receipt generator & downloader.
 - [x] Comprehensive hackathon README.md documenting zero-leak guarantees & Mainnet readiness.
+- [x] Official GitHub repository (`habibixyz/zec-whisper`) integrated across About & FAQ and persistent footer.
 - [ ] Prepare demo walkthrough script and screen recording.
 - [ ] Submit repository and video before the ZECATHON deadline.
 

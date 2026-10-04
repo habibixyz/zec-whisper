@@ -594,9 +594,9 @@ export const SendTab: React.FC<SendTabProps> = ({
 
               {/* TxID confirmation */}
               <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-1)', borderRadius: 10, padding: 12, textAlign: 'left' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                   <div style={{ fontSize: '0.71rem', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                    Broadcasted? Paste TxID to record:
+                    Sent via Mobile Wallet? Paste TxID to record:
                   </div>
                   {realTxid.trim().length === 64 && (
                     <a
@@ -605,30 +605,36 @@ export const SendTab: React.FC<SendTabProps> = ({
                       rel="noopener noreferrer"
                       style={{ fontSize: '0.7rem', color: 'var(--gold)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 3 }}
                     >
-                      <ExternalLink size={10} /> Explorer
+                      <ExternalLink size={10} /> View on Explorer
                     </a>
                   )}
+                </div>
+                <div style={{ fontSize: '0.69rem', color: 'var(--text-3)', marginBottom: 8, lineHeight: 1.4 }}>
+                  Attach your wallet's broadcast hash to track this disclosure in your local Safe Inbox.
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <input
                     type="text" className="input mono"
-                    placeholder="64-character transaction hash"
+                    placeholder="64-character transaction hash (from Zashi / YWallet)"
                     value={realTxid}
                     onChange={e => { setRealTxid(e.target.value); setTxidErr(''); }}
                     style={{ fontSize: '0.72rem', padding: '7px 10px', flex: 1 }}
                   />
                   <button type="button" className="btn-primary" onClick={handleConfirmTx} style={{ padding: '7px 12px', fontSize: '0.74rem', whiteSpace: 'nowrap' }}>
-                    Confirm & Record
+                    Record Receipt
                   </button>
                 </div>
                 {txidErr && <div style={{ color: 'var(--red)', fontSize: '0.72rem', marginTop: 5, display: 'flex', alignItems: 'center', gap: 4 }}><AlertTriangle size={11} />{txidErr}</div>}
               </div>
 
               {/* Demo simulation helper */}
-              <div style={{ textAlign: 'center', marginTop: 2 }}>
-                <button type="button" onClick={handleSimulate} className="btn-ghost" style={{ fontSize: '0.74rem', color: 'var(--text-3)', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                  <ShieldCheck size={12} color="var(--gold)" />
-                  Testing without a wallet? Simulate confirmation →
+              <div style={{ textAlign: 'center', marginTop: 8, background: 'rgba(244, 183, 40, 0.05)', border: '1px dashed rgba(244, 183, 40, 0.25)', borderRadius: 8, padding: '10px' }}>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-2)', marginBottom: 6 }}>
+                  Testing without spending real ZEC?
+                </div>
+                <button type="button" onClick={handleSimulate} className="btn-secondary" style={{ fontSize: '0.75rem', color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px' }}>
+                  <ShieldCheck size={13} color="var(--gold)" />
+                  Simulate Network Confirmation (Free)
                 </button>
               </div>
             </div>

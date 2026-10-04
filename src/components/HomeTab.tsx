@@ -1,6 +1,8 @@
 import React from 'react';
-import { Lock, ShieldCheck, ArrowRight, Terminal, Shield, FileCode, Server, HardDrive, KeyRound } from 'lucide-react';
+import { Lock, ShieldCheck, ArrowRight, Terminal, Shield, FileCode, Server, HardDrive, KeyRound, Globe } from 'lucide-react';
 import type { ShieldedSubmission } from '../types/zcash';
+import { DisclosuresWall } from './DisclosuresWall';
+import { ZecWhisperLogo } from './ZecWhisperLogo';
 
 interface HomeTabProps {
   submissions: ShieldedSubmission[];
@@ -9,16 +11,29 @@ interface HomeTabProps {
   onGoSend: () => void;
   onGoRegister: () => void;
   onGoAbout: () => void;
+  onGoDisclosures?: () => void;
 }
 
 export const HomeTab: React.FC<HomeTabProps> = ({
-  submissions, disclosedCount, totalZec, onGoSend, onGoRegister, onGoAbout,
+  submissions, disclosedCount, totalZec, onGoSend, onGoRegister, onGoAbout, onGoDisclosures,
 }) => {
   return (
     <div>
       {/* ─── Hero ─── */}
       <section className="hero">
         <div className="container">
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+            <div style={{
+              display: 'inline-flex',
+              padding: '6px',
+              borderRadius: '26px',
+              background: 'radial-gradient(circle, rgba(244,183,40,0.18) 0%, rgba(11,14,20,0) 70%)',
+              filter: 'drop-shadow(0 0 24px rgba(244,183,40,0.25))',
+            }}>
+              <ZecWhisperLogo size={68} />
+            </div>
+          </div>
+
           <div className="hero-eyebrow">
             <ShieldCheck size={13} />
             Zcash Orchard · Zero-Knowledge Privacy Architecture
@@ -55,11 +70,40 @@ export const HomeTab: React.FC<HomeTabProps> = ({
               <div className="stat-value" style={{ color: 'var(--green)' }}>{totalZec}</div>
               <div className="stat-label">ZEC Shielded</div>
             </div>
-            <div className="stat-item">
+            <div
+              className="stat-item"
+              onClick={onGoDisclosures}
+              style={{ cursor: onGoDisclosures ? 'pointer' : 'default' }}
+              title="Click to view Public Disclosures Feed"
+            >
               <div className="stat-value">{disclosedCount}</div>
-              <div className="stat-label">Disclosed</div>
+              <div className="stat-label">Disclosed {onGoDisclosures && '↗'}</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ─── Public Disclosures Wall Feed ─── */}
+      <section style={{ padding: '3.5rem 0', borderTop: '1px solid var(--border-1)' }}>
+        <div className="container">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.75rem' }}>
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.74rem', fontWeight: 600, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.5rem' }}>
+                <Globe size={13} /> Live Verified Disclosures
+              </div>
+              <h2 className="section-heading" style={{ margin: 0 }}>Public Disclosures Wall</h2>
+              <p className="section-sub" style={{ margin: '0.25rem 0 0' }}>
+                Confidential leaks, whistleblow reports, and bounties disclosed to the public with on-chain cryptographic proofs.
+              </p>
+            </div>
+            {onGoDisclosures && (
+              <button type="button" className="btn-secondary" onClick={onGoDisclosures} style={{ fontSize: '0.84rem' }}>
+                Full Feed View ({disclosedCount}) →
+              </button>
+            )}
+          </div>
+
+          <DisclosuresWall submissions={submissions} />
         </div>
       </section>
 

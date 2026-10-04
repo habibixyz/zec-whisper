@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Lock, Inbox, Users, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Lock, Inbox, Users, ShieldCheck, HelpCircle, Globe } from 'lucide-react';
+import { GithubIcon } from './components/GithubIcon';
+import { ZecWhisperLogo } from './components/ZecWhisperLogo';
 import type {
   ShieldedRecipient, ShieldedSubmission, SubmissionCategory,
   EncryptedAttachment, NetworkBlockStatus, ZcashNetwork, LightwalletdServer
@@ -7,6 +9,7 @@ import type {
 import { SendTab } from './components/SendTab';
 import { InboxTab } from './components/InboxTab';
 import { DirectoryTab } from './components/DirectoryTab';
+import { DisclosuresWall } from './components/DisclosuresWall';
 import { HomeTab } from './components/HomeTab';
 import { AboutFaqTab } from './components/AboutFaqTab';
 import { RegisterDropBoxModal } from './components/RegisterDropBoxModal';
@@ -15,13 +18,14 @@ import { JudgeTestingKitModal } from './components/JudgeTestingKitModal';
 import { KNOWN_LIGHTWALLETD_SERVERS, fetchLiveZcashBlockStats } from './utils/lightwalletd';
 import { loadSavedRecipients, addCustomRecipient, loadSavedSubmissions, saveSubmissions } from './utils/storage';
 
-type Tab = 'home' | 'send' | 'inbox' | 'directory' | 'about';
+type Tab = 'home' | 'send' | 'inbox' | 'disclosures' | 'directory' | 'about';
 
-// Only the 3 core tabs live in the header nav
+// Navigation tabs in the header nav
 const NAV_TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: 'send',      label: 'Send Drop',  icon: <Lock size={14} /> },
-  { id: 'inbox',     label: 'Inbox',      icon: <Inbox size={14} /> },
-  { id: 'directory', label: 'Directory',  icon: <Users size={14} /> },
+  { id: 'send',        label: 'Send Drop',   icon: <Lock size={14} /> },
+  { id: 'inbox',       label: 'Safe Inbox',  icon: <Inbox size={14} /> },
+  { id: 'disclosures', label: 'Public Feed', icon: <Globe size={14} /> },
+  { id: 'directory',   label: 'Directory',   icon: <Users size={14} /> },
 ];
 
 export default function App() {
@@ -40,20 +44,32 @@ export default function App() {
   const [isJudgeKitOpen, setIsJudgeKitOpen] = useState(false);
   const [isRefreshingNet, setIsRefreshingNet] = useState(false);
 
-  const [network, setNetwork] = useState<NetworkBlockStatus>({
+  const [network, setNetwork] = useState<NetworkBlockStatus>(() => ({
     network: 'mainnet',
     blockHeight: 3_500_226,
     bestBlockHash: '000000000068684cbd4ff47a739d2d91ad7859be6e57d0d2b9c191be47426459',
     bestBlockTime: 'Live',
     activeServer: KNOWN_LIGHTWALLETD_SERVERS[0],
-    lastUpdated: Date.now(),
+    lastUpdated: 0,
     syncPercentage: 100,
     isScanning: false,
     orchardPoolActive: true,
     targetBlockTime: 75,
     mempoolTxs: 4,
     difficulty: 290_776_638,
-  });
+  }));
+
+  const notify = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 5500);
+  };
+
+  const refreshNetwork = async (net: ZcashNetwork = network.network, srv?: LightwalletdServer) => {
+    setIsRefreshingNet(true);
+    const { status } = await fetchLiveZcashBlockStats(net, srv);
+    setNetwork(status);
+    setIsRefreshingNet(false);
+  };
 
   // URL param: ?to=u1...&name=...&handle=...
   useEffect(() => {
@@ -86,23 +102,12 @@ export default function App() {
     } catch { /* ignore */ }
   }, []);
 
-  const refreshNetwork = async (net: ZcashNetwork = network.network, srv?: LightwalletdServer) => {
-    setIsRefreshingNet(true);
-    const { status } = await fetchLiveZcashBlockStats(net, srv);
-    setNetwork(status);
-    setIsRefreshingNet(false);
-  };
-
   useEffect(() => {
     refreshNetwork('mainnet');
-    const iv = setInterval(() => refreshNetwork(network.network), 45_000);
+    const netType = network.network;
+    const iv = setInterval(() => refreshNetwork(netType), 45_000);
     return () => clearInterval(iv);
   }, []);
-
-  const notify = (msg: string) => {
-    setNotification(msg);
-    setTimeout(() => setNotification(null), 5500);
-  };
 
   const handleRegister = (r: ShieldedRecipient) => {
     const updated = addCustomRecipient(r);
@@ -183,13 +188,7 @@ export default function App() {
         <div className="container header-inner">
           {/* Logo */}
           <button type="button" onClick={() => setTab('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-            <div className="logo">
-              <div className="logo-mark">Z</div>
-              <div>
-                <div className="logo-name">ZECWHISPER</div>
-                <div className="logo-tagline">Shielded Whistleblower Protocol</div>
-              </div>
-            </div>
+            <ZecWhisperLogo size={38} showText={true} />
           </button>
 
           {/* ── Core nav: 3 tabs only ── */}
@@ -209,6 +208,14 @@ export default function App() {
                     fontWeight: 800, borderRadius: 99, padding: '1px 5px', lineHeight: 1.6,
                   }}>
                     {submissions.length}
+                  </span>
+                )}
+                {t.id === 'disclosures' && disclosedCount > 0 && (
+                  <span style={{
+                    background: 'var(--green)', color: '#07090E', fontSize: '0.6rem',
+                    fontWeight: 800, borderRadius: 99, padding: '1px 5px', lineHeight: 1.6,
+                  }}>
+                    {disclosedCount}
                   </span>
                 )}
               </button>
@@ -293,6 +300,7 @@ export default function App() {
             onGoSend={() => setTab('send')}
             onGoRegister={() => setIsRegisterOpen(true)}
             onGoAbout={() => setTab('about')}
+            onGoDisclosures={() => setTab('disclosures')}
           />
         )}
 
@@ -337,6 +345,20 @@ export default function App() {
           </div>
         )}
 
+        {tab === 'disclosures' && (
+          <div className="container" style={{ padding: '2rem 1.5rem 4rem' }}>
+            <div style={{ marginBottom: '1.75rem' }}>
+              <h1 style={{ fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '0.3rem' }}>
+                Public Disclosures Feed
+              </h1>
+              <p style={{ color: 'var(--text-2)', fontSize: '0.9rem' }}>
+                Verified leaks, whistleblow reports, and bounties disclosed to the public with on-chain cryptographic proofs.
+              </p>
+            </div>
+            <DisclosuresWall submissions={submissions} />
+          </div>
+        )}
+
         {tab === 'directory' && (
           <div className="container" style={{ padding: '2rem 1.5rem 4rem' }}>
             <DirectoryTab
@@ -363,6 +385,15 @@ export default function App() {
             <button type="button" onClick={() => setTab('about')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: '0.8rem', padding: 0 }}>About &amp; FAQ</button>
             <span>·</span>
             <button type="button" onClick={() => setIsJudgeKitOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: '0.8rem', padding: 0 }}>Judge Kit</button>
+            <span>·</span>
+            <a
+              href="https://github.com/habibixyz/zec-whisper"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'var(--text-3)', textDecoration: 'none', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+            >
+              <GithubIcon size={13} /> GitHub
+            </a>
             <span>·</span>
             <span>ZIP-321 · AES-256-GCM · No Logs</span>
           </div>

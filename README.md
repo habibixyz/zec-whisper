@@ -62,6 +62,29 @@ It is a client-side zero-knowledge confidential drop portal where whistleblowers
            └─► Recipient discloses tip with verifiable cryptographic proof
 ```
 
+## 🎯 Architectural Honesty: What is Real, What is Private, and What is Simulated
+
+Following the direct advice of the ZECATHON evaluation team (*"make sure the core works end to end and that your description explains clearly what is private, what is real, and what is a mock"*), here is the unambiguous breakdown of ZecWhisper:
+
+### 1. 🟢 What is 100% Real (Live & Production-Ready)
+- **ZIP-321 Payment Requests**: Strict RFC-3986 URI standard with RFC-4648 Base64URL-encoded memos (`zcash:u1...?amount=...&memo=...`). Tested and fully scannable by live mainnet wallets (**Zashi**, **YWallet**, **ZODL**).
+- **Client-Side AES-256-GCM Cryptography**: Real symmetric encryption/decryption using the browser's native `window.crypto.subtle` API. Generates cryptographically secure 96-bit random IVs and PBKDF2 keys. Data never leaves the browser unencrypted.
+- **512-Byte Binary Memo Enveloping**: Strict UTF-8 byte-counter and RFC-compliant memo formatting (`ZECW:{IPFS_CID}:{AES_KEY_BASE64}:{IV}:{NAME}`) that guarantees fitting within Orchard's 512-byte shielded memo limit.
+- **Orchard Bech32m Address Sanitization**: Rejection of transparent `t-addresses` (`t1...`, `t3...`); strict validation of Orchard Unified Address format (`u1...`).
+- **Live Lightwalletd Node Connectivity**: Real-time gRPC/HTTP status and block tip streaming against public Zcash infrastructure (`mainnet.lightwalletd.com:9067`, `zec.rocks:9067`) with live latency ping measurements.
+- **Cryptographic Proofs-of-Whistleblow**: Computes real SHA-256 digests over evidence files and exports verifiable JSON receipts.
+- **On-Chain Blockchair Explorer Bridge**: Direct lookup links for real mainnet transactions.
+
+### 2. 🛡️ What is Cryptographically Private (Zero Metadata Leaks)
+- **Sender Unlinkability**: When sent via Zashi/YWallet, Halo 2 zk-SNARK proofs are computed locally on the sender's device. No IP address, sender address, or amount is exposed on-chain.
+- **Confidential Memos**: Shielded note payloads are encrypted to the recipient's public key; only the holder of the corresponding Incoming Viewing Key (IVK) can decrypt them.
+- **Zero Third-Party Telemetry**: Zero Google Analytics, Sentry, Mixpanel, cookies, or external trackers. No backend server logging IPs or requests.
+- **Key Safety Isolation**: The application strictly refuses spending keys (`sk`) or seed phrases. Only read-only Incoming Viewing Keys (`uivk1...`) are accepted.
+
+### 3. 🧪 What is Simulated / Client-Side Mock (Zero-Cost Judge Experience)
+- **WASM Note Decryption / Light Client Sync**: Full Orchard note trial decryption in pure browser environments requires compiling heavy Rust crates (`librustzcash`) to WebAssembly, which currently imposes prohibitive multi-megabyte bundle sizes and browser memory limits. Therefore, the in-browser **Safe Inbox note scanner** provides an interactive client-side trial-decryption simulator that accurately models the compact block scanning protocol.
+- **Demo Mode**: Allows judges and reviewers without active Zcash Mainnet funds or mobile devices to test the entire lifecycle (leak submission, file encryption, block confirmation, note trial-decryption, and evidence file download) in under 60 seconds with zero friction.
+
 ---
 
 ## 🛡️ Zero-Leak Security Guarantees

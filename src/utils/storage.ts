@@ -1,7 +1,7 @@
 import type { ShieldedRecipient, ShieldedSubmission } from '../types/zcash';
 
-const RECIPIENTS_STORAGE_KEY = 'zecwhisper_recipients_v4';
-const SUBMISSIONS_STORAGE_KEY = 'zecwhisper_submissions_v2';
+const RECIPIENTS_STORAGE_KEY = 'zecwhisper_recipients_v5';
+const SUBMISSIONS_STORAGE_KEY = 'zecwhisper_submissions_v3';
 const DB_NAME = 'ZecWhisperEncryptedStore';
 const STORE_NAME = 'encrypted_evidence';
 
@@ -11,7 +11,9 @@ try {
     window.localStorage.removeItem('zecwhisper_recipients_v1');
     window.localStorage.removeItem('zecwhisper_recipients_v2');
     window.localStorage.removeItem('zecwhisper_recipients_v3');
+    window.localStorage.removeItem('zecwhisper_recipients_v4');
     window.localStorage.removeItem('zecwhisper_submissions_v1');
+    window.localStorage.removeItem('zecwhisper_submissions_v2');
     window.localStorage.removeItem('zecwhisper_recipients');
     window.localStorage.removeItem('zecwhisper_submissions');
     // Purge v2 submissions if they contain old [DEMO] seed data

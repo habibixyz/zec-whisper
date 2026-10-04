@@ -1,40 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <!-- Premium radial background gradient -->
-    <radialGradient id="bgGlow" cx="50%" cy="30%" r="75%">
+    <radialGradient id="zwBgGlow" cx="50%" cy="30%" r="75%">
       <stop offset="0%" stop-color="#1A202C" />
       <stop offset="100%" stop-color="#07090E" />
     </radialGradient>
     
-    <!-- Zcash Gold Gradient -->
-    <linearGradient id="zecGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFD043" />
-      <stop offset="100%" stop-color="#F4B728" />
+    <linearGradient id="zwGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE072" />
+      <stop offset="50%" stop-color="#F4B728" />
+      <stop offset="100%" stop-color="#B88014" />
     </linearGradient>
 
-    <!-- Subtle Outer Glow -->
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#F4B728" flood-opacity="0.35" />
+    <linearGradient id="zwGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <filter id="zwGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#F4B728" flood-opacity="0.45" />
     </filter>
   </defs>
 
-  <!-- High-contrast rounded badge background (works on dark AND light browser tabs) -->
-  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#bgGlow)" stroke="#F4B728" stroke-width="3" />
+  <!-- High-contrast rounded background -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#zwBgGlow)" stroke="rgba(244, 183, 40, 0.4)" stroke-width="2" />
 
-  <!-- Shielded cypherpunk core with Zcash Z -->
-  <g filter="url(#glow)">
-    <!-- Vertical currency strike lines -->
-    <path d="M32 9 L32 17 M32 47 L32 55" stroke="url(#zecGold)" stroke-width="4.5" stroke-linecap="round" />
+  <!-- Acoustic Whisper Arcs -->
+  <path d="M10 22 C 7 27, 7 37, 10 42" stroke="url(#zwGreen)" stroke-width="2.5" stroke-linecap="round" opacity="0.85" />
+  <path d="M54 22 C 57 27, 57 37, 54 42" stroke="url(#zwGreen)" stroke-width="2.5" stroke-linecap="round" opacity="0.85" />
 
-    <!-- Bold Zcash 'Z' character (thick, readable down to 16px) -->
-    <path d="M19 19 L45 19 L21 45 L45 45" 
-          fill="none" 
-          stroke="url(#zecGold)" 
-          stroke-width="5.5" 
-          stroke-linecap="round" 
-          stroke-linejoin="round" />
+  <!-- Shield Body -->
+  <path d="M32 8 L48 15 C 48 31, 42 45, 32 56 C 22 45, 16 31, 16 15 Z" 
+        fill="rgba(11, 14, 20, 0.9)" 
+        stroke="url(#zwGold)" 
+        stroke-width="2.8" 
+        stroke-linejoin="round"
+        filter="url(#zwGlow)" />
 
-    <!-- Whisper privacy dot accent -->
-    <circle cx="47" cy="18" r="2.5" fill="#10B981" />
-  </g>
+  <!-- Currency Strikes -->
+  <path d="M32 17 L32 23 M32 41 L32 47" stroke="url(#zwGold)" stroke-width="3" stroke-linecap="round" />
+
+  <!-- Bold Zcash Z -->
+  <path d="M23 23 L41 23 L23 41 L41 41" 
+        fill="none" 
+        stroke="url(#zwGold)" 
+        stroke-width="3.8" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
 </svg>

@@ -96,7 +96,7 @@ export const JudgeTestingKitModal: React.FC<JudgeTestingKitModalProps> = ({
           border: '1px solid rgba(16, 185, 129, 0.3)',
           borderRadius: 'var(--radius-md)',
           padding: '14px 18px',
-          marginBottom: '1.5rem',
+          marginBottom: '1.25rem',
           display: 'flex',
           gap: '12px',
           alignItems: 'center',
@@ -105,6 +105,56 @@ export const JudgeTestingKitModal: React.FC<JudgeTestingKitModalProps> = ({
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
             <strong style={{ color: 'var(--shield-green)' }}>100% Shielded Mainnet Guarantee: </strong>
             ZecWhisper strictly refuses transparent <span className="mono">t-addresses</span>. All transactions route through the Orchard zk-SNARK pool. No accounts, no logs, zero tracking cookies.
+          </div>
+        </div>
+
+        {/* ZECATHON Evaluation Transparency (What is Real, What is Private, What is Mocked) */}
+        <div style={{
+          background: 'rgba(244, 183, 40, 0.04)',
+          border: '1px solid rgba(244, 183, 40, 0.25)',
+          borderRadius: 'var(--radius-md)',
+          padding: '14px 16px',
+          marginBottom: '1.5rem',
+        }}>
+          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--zec-gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
+            🎯 Rubric Transparency: What is Real, What is Private, What is Simulated
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+              <div style={{ color: 'var(--shield-green)', fontWeight: 700, fontSize: '0.78rem', marginBottom: '4px' }}>
+                🟢 100% Real
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '14px', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: '1.45' }}>
+                <li>ZIP-321 RFC URI generator</li>
+                <li>Native Web Crypto AES-256-GCM</li>
+                <li>Orchard Bech32m address validator</li>
+                <li>Live Lightwalletd block tip sync</li>
+                <li>SHA-256 cryptographic receipts</li>
+              </ul>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(59, 130, 246, 0.25)' }}>
+              <div style={{ color: '#60A5FA', fontWeight: 700, fontSize: '0.78rem', marginBottom: '4px' }}>
+                🛡️ Fully Private
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '14px', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: '1.45' }}>
+                <li>Halo 2 zk-SNARK sender privacy</li>
+                <li>Shielded Orchard memo encryption</li>
+                <li>Read-only IVK (zero spending keys)</li>
+                <li>Zero external telemetry / trackers</li>
+              </ul>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '10px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(168, 85, 247, 0.25)' }}>
+              <div style={{ color: '#C084FC', fontWeight: 700, fontSize: '0.78rem', marginBottom: '4px' }}>
+                🧪 Simulated Mock
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '14px', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: '1.45' }}>
+                <li>Compact block trial-decryption scan (avoids heavy wasm binaries)</li>
+                <li>Zero-funds testing mode for judges</li>
+                <li>Simulated local network confirmation</li>
+              </ul>
+            </div>
           </div>
         </div>
 
