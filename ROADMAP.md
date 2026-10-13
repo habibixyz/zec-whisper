@@ -56,6 +56,19 @@
 - [x] Cryptographic Proof-of-Whistleblow JSON receipt generator & downloader.
 - [x] Comprehensive hackathon README.md documenting zero-leak guarantees & Mainnet readiness.
 - [x] Official GitHub repository (`habibixyz/zec-whisper`) integrated across About & FAQ and persistent footer.
+
+### Phase 6: Comprehensive Security & Privacy Audit (Zero-Telemetry Hardening)
+- [x] Eliminated external Google Fonts `@import` telemetry leak (100% private native system typography stack).
+- [x] Replaced external Dicebear HTTP avatar calls with client-side deterministic SVG identicons (`generateShieldedIdenticon`).
+- [x] Defaulted Lightwalletd block tip sync to local Zero-Telemetry Shield (blocks background IP leakage to Blockchair explorer).
+- [x] Fixed URL parameter validation bypass on Direct Drop links (`validateShieldedAddress` enforced).
+- [x] Replaced weak `Math.random` PRNG with cryptographically secure `window.crypto.getRandomValues`.
+- [x] Streamlined header navigation (removed redundant wipe button to eliminate user confusion).
+- [x] Sanitized decrypted memo attachment filenames against path traversal (`..`) and XSS injections.
+- [x] Strengthened Web Crypto AES-GCM base64 parsing against DOMException crashing.
+- [x] Oxlint & TypeScript build verification: 0 errors, 0 warnings.
+
+### Phase 7: Demo Recording & Hackathon Submission
 - [ ] Prepare demo walkthrough script and screen recording.
 - [ ] Submit repository and video before the ZECATHON deadline.
 

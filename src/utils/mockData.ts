@@ -1,4 +1,5 @@
 import type { ShieldedRecipient, ShieldedSubmission } from '../types/zcash';
+import { generateShieldedIdenticon } from './crypto';
 
 /**
  * Official default drop box recipient.
@@ -11,7 +12,7 @@ export const FEATURED_RECIPIENTS: ShieldedRecipient[] = [
     name: 'ZecWhisper Custody Vault',
     handle: '@zecwhisper_vault',
     role: 'Official Shielded Tip-Jar & Bounty Vault',
-    avatar: 'https://api.dicebear.com/7.x/identicon/svg?seed=zecwhisper_vault&backgroundColor=0B0E14',
+    avatar: generateShieldedIdenticon('@zecwhisper_vault'),
     unifiedAddress: 'u1ktxu6mmjnvagk9qlavcqrt7n8atpu9g5m98gadlfnj45x4n38zn3u2zsn6jg892tdvdkeqetsu6s69ku9m26ylfd6z8y5069va8cm4296jywcfdm5t8ne8nwu08cn3g7raq5n9d0dcpjej543l68wuyadrn6cgr9j55m7hx2dgdw8zjd',
     viewingKey: '',
     description: 'Official Zcash Orchard shielded vault for ZecWhisper hackathon tips, disclosures, and bounty escrow. Direct non-custodial receipt to project custodian.',

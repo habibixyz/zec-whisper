@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Lock, Inbox, Users, ShieldCheck, HelpCircle, Globe } from 'lucide-react';
 import { GithubIcon } from './components/GithubIcon';
 import { ZecWhisperLogo } from './components/ZecWhisperLogo';
@@ -17,6 +17,8 @@ import { LightwalletdScannerModal } from './components/LightwalletdScannerModal'
 import { JudgeTestingKitModal } from './components/JudgeTestingKitModal';
 import { KNOWN_LIGHTWALLETD_SERVERS, fetchLiveZcashBlockStats } from './utils/lightwalletd';
 import { loadSavedRecipients, addCustomRecipient, loadSavedSubmissions, saveSubmissions } from './utils/storage';
+import { validateShieldedAddress } from './utils/zip321';
+import { generateShieldedIdenticon } from './utils/crypto';
 
 type Tab = 'home' | 'send' | 'inbox' | 'disclosures' | 'directory' | 'about';
 
@@ -29,12 +31,60 @@ const NAV_TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 ];
 
 export default function App() {
-  const [tab, setTab] = useState<Tab>('home');
-  const [recipients, setRecipients] = useState<ShieldedRecipient[]>(() => loadSavedRecipients());
+  const [tab, setTab] = useState<Tab>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('to')) return 'send';
+    }
+    return 'home';
+  });
+
+  const [recipients, setRecipients] = useState<ShieldedRecipient[]>(() => {
+    const saved = loadSavedRecipients();
+    try {
+      if (typeof window !== 'undefined') {
+        const p = new URLSearchParams(window.location.search);
+        const to = p.get('to');
+        if (to && validateShieldedAddress(to).valid) {
+          const rawName = p.get('name') || 'Direct Drop';
+          const rawHandle = p.get('handle') || '@direct_drop';
+          const name = rawName.slice(0, 32);
+          const handle = (rawHandle.startsWith('@') ? rawHandle : `@${rawHandle}`).slice(0, 24);
+          const exists = saved.find(r => r.unifiedAddress === to);
+          if (!exists) {
+            const r: ShieldedRecipient = {
+              name,
+              handle,
+              role: 'Direct Drop Recipient',
+              avatar: generateShieldedIdenticon(handle),
+              unifiedAddress: to,
+              description: 'Confidential drop box opened via a verified direct link.',
+              verified: true,
+            };
+            return addCustomRecipient(r);
+          }
+        }
+      }
+    } catch { /* ignore */ }
+    return saved;
+  });
+
   const [selectedRecipient, setSelectedRecipient] = useState<ShieldedRecipient | null>(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const p = new URLSearchParams(window.location.search);
+        const to = p.get('to');
+        if (to && validateShieldedAddress(to).valid) {
+          const loaded = loadSavedRecipients();
+          const match = loaded.find(r => r.unifiedAddress === to);
+          if (match) return match;
+        }
+      }
+    } catch { /* ignore */ }
     const saved = loadSavedRecipients();
     return saved.length > 0 ? saved[0] : null;
   });
+
   const [submissions, setSubmissions] = useState<ShieldedSubmission[]>(() => loadSavedSubmissions());
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -64,50 +114,29 @@ export default function App() {
     setTimeout(() => setNotification(null), 5500);
   };
 
-  const refreshNetwork = async (net: ZcashNetwork = network.network, srv?: LightwalletdServer) => {
+  const refreshNetwork = useCallback(async (net: ZcashNetwork = network.network, srv?: LightwalletdServer) => {
     setIsRefreshingNet(true);
     const { status } = await fetchLiveZcashBlockStats(net, srv);
     setNetwork(status);
     setIsRefreshingNet(false);
-  };
+  }, [network.network]);
 
-  // URL param: ?to=u1...&name=...&handle=...
-  useEffect(() => {
-    try {
-      const p = new URLSearchParams(window.location.search);
-      const to = p.get('to');
-      if (to && to.startsWith('u1')) {
-        const name   = p.get('name') || 'Direct Drop';
-        const handle = p.get('handle') || '@direct_drop';
-        const exists = recipients.find(r => r.unifiedAddress === to);
-        if (exists) {
-          setSelectedRecipient(exists);
-        } else {
-          const r: ShieldedRecipient = {
-            name: decodeURIComponent(name),
-            handle: decodeURIComponent(handle),
-            role: 'Direct Drop Recipient',
-            avatar: `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(handle)}`,
-            unifiedAddress: to,
-            description: 'Confidential drop box opened via a direct share link.',
-            verified: true,
-          };
-          const updated = addCustomRecipient(r);
-          setRecipients(updated);
-          setSelectedRecipient(r);
-        }
-        setTab('send');
-        notify(`Drop box loaded for ${decodeURIComponent(name)}`);
-      }
-    } catch { /* ignore */ }
-  }, []);
+  const mountedRef = useRef(false);
 
   useEffect(() => {
-    refreshNetwork('mainnet');
-    const netType = network.network;
-    const iv = setInterval(() => refreshNetwork(netType), 45_000);
-    return () => clearInterval(iv);
-  }, []);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      timer = setTimeout(() => {
+        refreshNetwork('mainnet');
+      }, 50);
+    }
+    const iv = setInterval(() => refreshNetwork(network.network), 45_000);
+    return () => {
+      if (timer) clearTimeout(timer);
+      clearInterval(iv);
+    };
+  }, [network.network, refreshNetwork]);
 
   const handleRegister = (r: ShieldedRecipient) => {
     const updated = addCustomRecipient(r);
@@ -125,9 +154,15 @@ export default function App() {
     attachment?: EncryptedAttachment;
     txid?: string;
   }) => {
-    const txid = data.txid && /^[0-9a-fA-F]{64}$/.test(data.txid.trim())
-      ? data.txid.trim().toLowerCase()
-      : Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+    // Cryptographically secure 64-hex TxID generation
+    let txid = '';
+    if (data.txid && /^[0-9a-fA-F]{64}$/.test(data.txid.trim())) {
+      txid = data.txid.trim().toLowerCase();
+    } else {
+      const entropy = new Uint8Array(32);
+      window.crypto.getRandomValues(entropy);
+      txid = Array.from(entropy).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
     const sub: ShieldedSubmission = {
       id: `sub-${Date.now()}`,
@@ -268,7 +303,12 @@ export default function App() {
           </button>
 
           {/* Right: secondary nav links */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <span style={{ fontSize: '0.73rem', color: 'var(--green)', display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 600 }}>
+              <ShieldCheck size={12} />
+              Zero-Telemetry Shield
+            </span>
+            <span style={{ color: 'var(--text-4)', fontSize: '0.7rem' }}>·</span>
             <button
               type="button"
               onClick={() => setTab('about')}

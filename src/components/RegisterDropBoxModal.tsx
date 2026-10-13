@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import type { ShieldedRecipient } from '../types/zcash';
 import { validateShieldedAddress } from '../utils/zip321';
+import { generateShieldedIdenticon } from '../utils/crypto';
 
 interface RegisterDropBoxModalProps {
   isOpen: boolean;
@@ -44,7 +45,7 @@ export const RegisterDropBoxModal: React.FC<RegisterDropBoxModalProps> = ({
       name: name.trim(),
       handle: formattedHandle,
       role: role.trim() || 'Independent Recipient',
-      avatar: `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(formattedHandle)}`,
+      avatar: generateShieldedIdenticon(formattedHandle),
       unifiedAddress: unifiedAddress.trim(),
       description: description.trim() || 'Accepting confidential zero-knowledge disclosures and shielded tips.',
       verified: true,

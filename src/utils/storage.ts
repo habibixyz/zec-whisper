@@ -169,3 +169,25 @@ export async function getEncryptedEvidence(ipfsCid: string): Promise<StoredEvide
     return null;
   }
 }
+
+/**
+ * Emergency Whistleblower Data Wipe (Panic Wipe)
+ * Purges all local storage keys, session data, and drops the IndexedDB database.
+ */
+export async function purgeAllWhisperData(): Promise<void> {
+  try {
+    if (typeof window !== 'undefined') {
+      // 1. Purge LocalStorage
+      const keysToPurge = Object.keys(localStorage).filter(k => k.startsWith('zecwhisper'));
+      keysToPurge.forEach(k => localStorage.removeItem(k));
+      sessionStorage.clear();
+
+      // 2. Delete IndexedDB
+      if (indexedDB.deleteDatabase) {
+        indexedDB.deleteDatabase(DB_NAME);
+      }
+    }
+  } catch (err) {
+    console.error('[ZecWhisper] Emergency wipe encountered error:', err);
+  }
+}
